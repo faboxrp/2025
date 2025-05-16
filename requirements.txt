@@ -1,0 +1,4 @@
+fastapi
+uvicorn[standard]  # Incluye gunicorn, que es bueno para producción
+python-multipart
+jinja2

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cálculo Resistencia Mampostería Confinada</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #007bff;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        p.author {
+            text-align: center;
+            font-style: italic;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="number"] {
+            width: calc(100% - 24px);
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 25px;
+            font-size: 1em;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            background-color: #e7f3ff;
+        }
+
+        .results p {
+            margin: 8px 0;
+            font-size: 1.05em;
+        }
+
+        .results strong {
+            color: #0056b3;
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        .error {
+            color: red;
+            background-color: #ffebee;
+            border: 1px solid red;
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Hoja de Cálculo - Resistencia a Compresión de Mampostería Confinada</h1>
+        <p class="author">Autor del script original: PABLO BAEZ (Adaptado para Web por IA)</p>
+
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form action="/" method="post">
+            <div class="form-section">
+                <h2>Datos del Muro</h2>
+                <label for="H">Altura del muro (H) (m):</label>
+                <input type="number" step="any" id="H" name="H" value="{{ inputs.H if inputs else '' }}" required>
+
+                <label for="L">Longitud del muro (L) (m):</label>
+                <input type="number" step="any" id="L" name="L" value="{{ inputs.L if inputs else '' }}" required>
+
+                <label for="t">Espesor del muro (t) (m):</label>
+                <input type="number" step="any" id="t" name="t" value="{{ inputs.t if inputs else '' }}" required>
+            </div>
+
+            <div class="form-section">
+                <h2>Dimensiones del Confinamiento (por columna)</h2>
+                <label for="b_conf">Base de columna de confinamiento (b) (m):</label>
+                <input type="number" step="any" id="b_conf" name="b_conf" value="{{ inputs.b_conf if inputs else '' }}"
+                    required>
+
+                <label for="h_conf">Altura de columna de confinamiento (h) (m):</label>
+                <input type="number" step="any" id="h_conf" name="h_conf" value="{{ inputs.h_conf if inputs else '' }}"
+                    required>
+            </div>
+
+            <div class="form-section">
+                <h2>Refuerzo y Materiales</h2>
+                <label for="Ast">Área de acero de refuerzo en una columna (Ast) (cm²):</label>
+                <input type="number" step="any" id="Ast" name="Ast"
+                    value="{{ inputs.Ast if inputs is not none else '0' }}" required min="0">
+
+                <label for="Re">Resistencia unitaria de mampostería (f'm o Re) (MPa):</label>
+                <input type="number" step="any" id="Re" name="Re" value="{{ inputs.Re if inputs else '' }}" required>
+            </div>
+
+            <button type="submit">Calcular Resistencia</button>
+        </form>
+
+        {% if results %}
+        <div class="results">
+            <h2>Resultados del Cálculo</h2>
+            <p><strong>Área de confinamiento por columna (Aci):</strong> {{ results.Aci }} cm²</p>
+            <p><strong>Área efectiva de mampostería (Amd):</strong> {{ results.Amd }} cm²</p>
+            <p><strong>Carga resistente de 1 columna (Pnc):</strong> {{ results.Pnc }} T</p>
+            <p><strong>Carga resistente de 2 columnas (Pnct):</strong> {{ results.Pnct }} T</p>
+            <p><strong>Carga resistente de la mampostería (Pnd):</strong> {{ results.Pnd }} T</p>
+            <p><strong>Carga resistente total del muro (Pr):</strong> {{ results.Pr }} T</p>
+            <hr>
+            <p><strong>Esbeltez del muro (H/t):</strong> {{ results.h_t }} → {{ results.cumple_esbeltez }}</p>
+            <p><strong>Cuantía de acero en columnas:</strong> {{ results.cuantia }} → {{ results.cumple_cuantia }}</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+
+</html>
