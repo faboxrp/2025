@@ -1,4 +1,5 @@
 fastapi
-uvicorn[standard]  # Incluye gunicorn, que es bueno para producción
+uvicorn[standard]
+gunicorn          # Añadido explícitamente
 python-multipart
 jinja2
